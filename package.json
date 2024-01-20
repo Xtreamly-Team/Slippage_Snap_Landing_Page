@@ -1,6 +1,6 @@
 {
-	"name": "Xtreamly UI",
-	"version": "2.1.0",
+	"name": "xtreamly_slippage_snap_landing_page_demo",
+	"version": "1.1.0",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
@@ -37,10 +37,8 @@
 		"@fortawesome/free-regular-svg-icons": "^6.4.0",
 		"@fortawesome/free-solid-svg-icons": "^6.4.0",
 		"@tailwindcss/typography": "^0.5.9",
-		"cron-time-generator": "^2.0.0",
 		"ethers": "^5.7",
 		"svelte-ace": "^1.0.21",
-		"svelte-awesome": "^3.2.1",
-		"xtreamly_sdk": "^2.3.0"
+		"svelte-awesome": "^3.2.1"
 	}
 }

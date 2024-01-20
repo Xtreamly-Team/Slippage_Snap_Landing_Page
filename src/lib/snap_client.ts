@@ -1,12 +1,12 @@
 export const defaultSnapOrigin = 'local:http://localhost:8080';
+
 export type GetSnapsResponse = Record<string, Snap>;
 
 export type Snap = {
-    permissionName: string;
-    // Also known as origin
-    id: string;
-    version: string;
-    initialPermissions: Record<string, unknown>;
+  permissionName: string;
+  id: string;
+  version: string;
+  initialPermissions: Record<string, unknown>;
 };
 
 export type ConnectedSnap = {
@@ -28,23 +28,7 @@ export class SnapClient {
             throw Error('Need to have metamask installed');
         }
     }
-    /**
-     * Get the installed snaps in MetaMask.
-     *
-     * @returns The snaps installed in MetaMask.
-     */
-    getInstalledSnaps = async (): Promise<GetSnapsResponse> => {
-        return (await window.ethereum.request({
-            method: 'wallet_getSnaps',
-        })) as unknown as GetSnapsResponse;
-    };
 
-    /**
-     * Connect a snap to MetaMask.
-     *
-     * @param snapId - The ID of the snap.
-     * @param params - The params to pass with the snap to connect.
-     */
     connectToSnap = async (
         origin: string = defaultSnapOrigin,
         params: Record<'version' | string, unknown> = {},
@@ -55,21 +39,30 @@ export class SnapClient {
                 [origin]: params,
             },
         });
-        // const snapOrigin: string = Object.keys(res)[0]
-        const snapObject: ConnectedSnap = Object.values(res)[0] as ConnectedSnap
-        this.connectedSnaps.push(snapObject);
-        console.log(this.connectedSnaps);
+        return res
     };
 
-    invokeSnap = async (method: string) => {
-        let res = await window.ethereum.request({
-            method: 'wallet_invokeSnap',
-            params: { snapId: this.connectedSnaps[0]['id'], request: { method: method } },
-        });
-        return res;
+    getSnaps = async (
+    ): Promise<GetSnapsResponse> =>
+      (await (window.ethereum).request({
+        method: 'wallet_getSnaps',
+      })) as unknown as GetSnapsResponse;
+
+    getLocalSnap = async (version?: string): Promise<Snap | undefined> => {
+      try {
+        const snaps = await this.getSnaps();
+
+        return Object.values(snaps).find(
+          (snap) =>
+            snap.id === defaultSnapOrigin && (!version || snap.version === version),
+        );
+      } catch (error) {
+        console.log('Failed to obtain installed snap', error);
+        return undefined;
+      }
     };
 
-    invokeSpecificSnap = async (snapOrigin: string, method: string) => {
+    invokeSnap = async (snapOrigin: string, method: string) => {
         let res = await window.ethereum.request({
             method: 'wallet_invokeSnap',
             params: { snapId: snapOrigin, request: { method: method } },
@@ -77,7 +70,9 @@ export class SnapClient {
         return res;
     };
 
-
+    sendHelloToLocal = async() => {
+        await this.invokeSnap(defaultSnapOrigin, 'hello')
+    }
 
     isLocalSnap = (snapId: string) => snapId.startsWith('local:');
 }

@@ -1,174 +1,184 @@
 <script lang="ts">
-	import xtreamly_logo from '$lib/assets/xtreamly_logo.png';
-	import xtreamly_logo_white from '$lib/assets/xtreamly_logo_white.png';
-	import { BACKEND_ADDRESS } from '$lib/utils';
-	import { Authenticator, MetamaskHandler } from 'xtreamly_sdk';
+    import xtreamly_logo_white from "$lib/assets/xtreamly_logo_white.png";
+    import { SnapAddress } from "$lib/constants";
+    import { MetamaskHandler } from "$lib/metamask_handler";
+    import { SnapClient } from "$lib/snap_client";
 
-	type InitializationState = 'none' | 'metamask' | 'opened' | 'error';
-	type CardState = 'disabled' | 'ready' | 'done';
+    const metamaskHandler = new MetamaskHandler();
+    const snapClient = new SnapClient();
 
-	let appState: InitializationState = 'none';
+    type InitializationState = "none" | "metamask" | "installed" | "error";
+    type CardState = "disabled" | "ready" | "done";
 
-	$: metamaskCardState = getMetamaskCardState(appState);
-	$: xtreamlyCardState = getXtreamlyCardState(appState);
+    let appState: InitializationState = "none";
 
-	function getMetamaskCardState(appState: InitializationState): CardState {
-		switch (appState) {
-			case 'none':
-				return 'ready';
-			case 'metamask':
-				// return 'done';
-				return 'disabled';
-			case 'opened':
-				// return 'done';
-				return 'disabled';
-			case 'error':
-				return 'disabled';
-		}
-	}
+    $: metamaskCardState = getMetamaskCardState(appState);
+    $: xtreamlyCardState = getXtreamlyCardState(appState);
 
-	function getXtreamlyCardState(appState: InitializationState): CardState {
+    function getMetamaskCardState(appState: InitializationState): CardState {
+        switch (appState) {
+            case "none":
+                return "ready";
+            case "metamask":
+                // return 'done';
+                return "disabled";
+            case "installed":
+                // return 'done';
+                return "disabled";
+            case "error":
+                return "disabled";
+        }
+    }
+
+    function getXtreamlyCardState(appState: InitializationState): CardState {
         console.warn(appState);
-		switch (appState) {
-			case 'none':
-				return 'disabled';
-			case 'metamask':
-				return 'ready';
-			case 'opened':
-				// return 'done';
-				return 'disabled';
-			case 'error':
-				return 'disabled';
-		}
-	}
+        switch (appState) {
+            case "none":
+                return "disabled";
+            case "metamask":
+                return "ready";
+            case "installed":
+                // return 'done';
+                return "disabled";
+            case "error":
+                return "disabled";
+        }
+    }
 
-	const metamaskHandler = new MetamaskHandler();
+    async function openSnapClickHandler() {
+        console.log(`opening snap`);
+        console.log(await snapClient.getSnaps());
+        // console.log(await snapClient.connectToSnap('local:http://localhost:8080'))
+        console.log(await snapClient.connectToSnap(SnapAddress));
+        console.log("Connected");
+        appState = "installed";
+    }
 
-	const authenticator = new Authenticator(BACKEND_ADDRESS);
-
-	async function openPopUpClickHandler() {
-		console.log(`opening popup`);
-		let url = `auth`;
-		if (await authenticator.isLoggedIn()) {
-			url = `control`;
-		}
-
-		const popup = window.open(
-			url,
-			undefined,
-			`height=550, left=1635, top=170, status=no, width=350, titlebar=no, toolbar=no, menubar=no, popup`
-		);
-
-        appState = 'opened';
-	}
-
-	const getCardClass = (cardState: CardState) => {
-		console.log(cardState);
-		switch (cardState) {
-			case 'disabled':
-				return 'btn-accent';
-			case 'ready':
-				return 'btn-primary';
-			case 'done':
-				return 'btn-success';
-		}
-	};
+    const getCardClass = (cardState: CardState) => {
+        console.log(cardState);
+        switch (cardState) {
+            case "disabled":
+                return "btn-accent";
+            case "ready":
+                return "btn-primary";
+            case "done":
+                return "btn-success";
+        }
+    };
 
     function metamaskCardButtonLabel(appState: InitializationState) {
         switch (appState) {
-            case 'none':
-                return 'Connect';
-            case 'metamask':
-                return 'Connected';
-            case 'opened':
-                return 'Connected';
-            case 'error':
-                return 'Error';
+            case "none":
+                return "Connect";
+            case "metamask":
+                return "Connected";
+            case "installed":
+                return "Connected";
+            case "error":
+                return "Error";
         }
-	};
-
+    }
 
     function xtreamlyCardButtonLabel(appState: InitializationState) {
         switch (appState) {
-            case 'none':
-                return 'Open Xtreamly';
-            case 'metamask':
-                return 'Open Xtreamly';
-            case 'error':
-                return 'Open Xtreamly';
-            case 'opened':
-                return 'Opened';
+            case "none":
+                return "Install Snap";
+            case "metamask":
+                return "Install Snap";
+            case "error":
+                return "Install Snap";
+            case "installed":
+                return "Installed";
         }
-	};
+    }
+
 </script>
 
 <svelte:head>
-	<title>Xtreamly</title>
-	<link
-		rel="icon"
-		href="https://www.gitbook.com/cdn-cgi/image/width=40,dpr=2,height=40,fit=contain,format=auto/https%3A%2F%2F3001788566-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FssWXZ6ySl0mrYIAVmLjq%252Ficon%252FQPE0NacB3sAo4zgvg2Tz%252FXtreamly.jpg%3Falt%3Dmedia%26token%3Dc6b77943-f21c-40d2-b8d4-867f38a319f3"
-	/>
-	<link
-		rel="shortcut icon"
-		href="https://www.gitbook.com/cdn-cgi/image/width=40,dpr=2,height=40,fit=contain,format=auto/https%3A%2F%2F3001788566-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FssWXZ6ySl0mrYIAVmLjq%252Ficon%252FQPE0NacB3sAo4zgvg2Tz%252FXtreamly.jpg%3Falt%3Dmedia%26token%3Dc6b77943-f21c-40d2-b8d4-867f38a319f3"
-	/>
+    <title>Xtreamly</title>
+    <link
+        rel="icon"
+        href="https://www.gitbook.com/cdn-cgi/image/width=40,dpr=2,height=40,fit=contain,format=auto/https%3A%2F%2F3001788566-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FssWXZ6ySl0mrYIAVmLjq%252Ficon%252FQPE0NacB3sAo4zgvg2Tz%252FXtreamly.jpg%3Falt%3Dmedia%26token%3Dc6b77943-f21c-40d2-b8d4-867f38a319f3"
+    />
+    <link
+        rel="shortcut icon"
+        href="https://www.gitbook.com/cdn-cgi/image/width=40,dpr=2,height=40,fit=contain,format=auto/https%3A%2F%2F3001788566-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FssWXZ6ySl0mrYIAVmLjq%252Ficon%252FQPE0NacB3sAo4zgvg2Tz%252FXtreamly.jpg%3Falt%3Dmedia%26token%3Dc6b77943-f21c-40d2-b8d4-867f38a319f3"
+    />
 </svelte:head>
 
 <div class="w-full h-screen bg-gray-100 flex items-center justify-center">
-	<div
-		class="container bg-gray-100 w-full max-w-5xl h-full md:h-1/2 rounded-xl
+    <div
+        class="container bg-gray-100 w-full max-w-5xl h-full md:h-1/2 rounded-xl
         mx-4 flex flex-wrap px-5 pt-5 pb-3.5 flex-row
         items-center gap-4 justify-evenly"
-	>
-		<div class="card w-80 h-[32rem] bg-base-100 shadow-xl">
-			<figure>
-				<img
-					class="p-12 w-72"
-					src="https://altcoinsbox.com/wp-content/uploads/2023/03/metamask-logo.webp"
-					alt="Metamask"
-				/>
-			</figure>
-			<div class="card-body">
-				<h2 class="card-title justify-center">Metamask</h2>
-				<p class="text-center">Connect your metamask</p>
-				<div class="card-actions justify-end">
-					<button
+    >
+        <div class="card w-80 h-[32rem] bg-base-100 shadow-xl">
+            <figure>
+                <img
+                    class="p-12 w-72"
+                    src="https://altcoinsbox.com/wp-content/uploads/2023/03/metamask-logo.webp"
+                    alt="Metamask"
+                />
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title justify-center">Metamask</h2>
+                <p class="text-center">Connect your metamask</p>
+                <div class="card-actions justify-end">
+                    <button
                         disabled={metamaskCardState === "disabled"}
-						class="w-full btn {getCardClass(metamaskCardState
-						)}"
-						on:click={async () => {
-                            if (appState === 'metamask' || appState === 'opened') {
+                        class="w-full btn {getCardClass(metamaskCardState)}"
+                        on:click={async () => {
+                            if (
+                                appState === "metamask" ||
+                                appState === "installed"
+                            ) {
                                 return;
                             }
-							let res = await metamaskHandler.connectAndGetAccounts();
+                            let res = await metamaskHandler.initialize();
 
-							if (res && res.length > 0) {
-								const account = res[0];
-								appState = 'metamask';
-							}
-						}}>{metamaskCardButtonLabel(appState)}</button
-					>
-				</div>
-			</div>
-		</div>
-		<div class="card w-80 h-[32rem] bg-base-100 shadow-xl">
-			<figure>
-				<img class="p-12 w-72" src={xtreamly_logo_white} alt="Xtreamly" />
-			</figure>
-			<div class="card-body">
-				<h2 class="card-title justify-center">Xtreamly</h2>
-				<p class="text-center">Open control panel</p>
-				<div class="card-actions justify-end">
-					<button
+                            if (res && res.length > 0) {
+                                const account = res[0];
+                                // if ((await snapClient)
+                                const installedSnaps =
+                                    await snapClient.getSnaps();
+                                console.log(installedSnaps)
+                                console.log(Object.keys(installedSnaps))
+                                if (
+                                    Object.keys(installedSnaps).includes(SnapAddress)
+                                ) {
+                                    appState = "installed";
+                                    
+                                } else {
+                                    appState = "metamask";
+                                }
+                                console.log(appState)
+                            }
+                        }}>{metamaskCardButtonLabel(appState)}</button
+                    >
+                </div>
+            </div>
+        </div>
+        <div class="card w-80 h-[32rem] bg-base-100 shadow-xl">
+            <figure>
+                <img
+                    class="p-12 w-72"
+                    src={xtreamly_logo_white}
+                    alt="Xtreamly"
+                />
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title justify-center">Xtreamly</h2>
+                <p class="text-center">Install Slippage Predictor Snap</p>
+                <div class="card-actions justify-end">
+                    <button
                         disabled={xtreamlyCardState === "disabled"}
-						class="w-full btn {getCardClass(xtreamlyCardState
-						)}"
-						on:click={async () => {
-							await openPopUpClickHandler();
-						}}>{xtreamlyCardButtonLabel(appState)}</button
-					>
-				</div>
-			</div>
-		</div>
-	</div>
+                        class="w-full btn {getCardClass(xtreamlyCardState)}"
+                        on:click={async () => {
+                            await openSnapClickHandler();
+                        }}>{xtreamlyCardButtonLabel(appState)}</button
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
