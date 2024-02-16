@@ -1,1 +1,1 @@
-export const SnapAddress = 'npm:xtreamly_slippage_predictor'
+export const SnapAddress = 'npm:@xtreamly/xtreamly_slippage_predictor_snap'
