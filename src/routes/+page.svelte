@@ -107,9 +107,10 @@
 </svelte:head>
 
 <div class="w-full h-screen bg-gray-100 flex items-center justify-center">
+    <div class="xl:w-1/2 lg:w-2/3 flex flex-col items-center justify-center">
     <div
         class="container bg-gray-100 w-full max-w-5xl h-full md:h-1/2 rounded-xl
-        mx-4 flex flex-wrap px-5 pt-5 pb-3.5 flex-row
+        flex flex-wrap pt-5 pb-3.5 flex-row
         items-center gap-4 justify-evenly"
     >
         <div class="card w-80 h-[32rem] bg-base-100 shadow-xl">
@@ -181,4 +182,16 @@
             </div>
         </div>
     </div>
+                <div class="h-4"/>
+        <div class="mx-12 card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title justify-start">Description</h2>
+                <p class="">Xtreamly slippage prediction snap provides insights and predicts slippage amount on DeX swaps. Currently works on ETH/USDT and ETH/USDC pairs on Uniswap V3.</p>
+                <a href="https://info.xtreamly.io" class="font-bold link-info text-start justify-center">Starting Guide and FAQ</a>
+                <div class="h-4"/>
+                <h2 class="card-title justify-start">Support</h2>
+                <p class="text-start">Email: info@xtreamly.io</p>
+            </div>
+        </div>
+        </div>
 </div>
