@@ -1,5 +1,9 @@
 export class MetamaskHandler {
-    constructor() { }
+    constructor() { 
+        if (!window.ethereum) {
+            throw Error('Need to have metamask installed');
+        }
+    }
 
     initialize = async (): Promise<string> => {
         let res = await window.ethereum.request({ method: "eth_requestAccounts" });

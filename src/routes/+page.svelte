@@ -4,8 +4,6 @@
     import { MetamaskHandler } from "$lib/metamask_handler";
     import { SnapClient } from "$lib/snap_client";
 
-    const metamaskHandler = new MetamaskHandler();
-    const snapClient = new SnapClient();
 
     type InitializationState = "none" | "metamask" | "installed" | "error";
     type CardState = "disabled" | "ready" | "done";
@@ -75,7 +73,7 @@
             case "installed":
                 return "Connected";
             case "error":
-                return "Error";
+                return "Metamask Not Found";
         }
     }
 
@@ -90,6 +88,18 @@
             case "installed":
                 return "Installed";
         }
+    }
+
+    let metamaskAvailable = true
+    let metamaskHandler: MetamaskHandler
+    let snapClient: SnapClient
+
+    try {
+    metamaskHandler = new MetamaskHandler();
+    snapClient = new SnapClient();
+    } catch {
+        metamaskAvailable = false;
+        appState = 'error'
     }
 
 </script>
