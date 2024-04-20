@@ -197,7 +197,7 @@
             <div class="card-body">
                 <h2 class="card-title justify-start">Description</h2>
                 <p class="">Xtreamly slippage prediction snap provides insights and predicts slippage amount on DeX swaps. Currently works on ETH/USDT and ETH/USDC pairs on Uniswap V3.</p>
-                <a href="https://info.xtreamly.io" class="font-bold link-info text-start justify-center">Starting Guide and FAQ</a>
+                <a href="https://info.xtreamly.io/xtreamly/product/snaps-user-guide" class="font-bold link-info text-start justify-center">Starting Guide and FAQ</a>
                 <div class="h-4"/>
                 <h2 class="card-title justify-start">Support</h2>
                 <p class="text-start">Email: info@xtreamly.io</p>
